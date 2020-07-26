@@ -37,7 +37,7 @@ public class Boulder : MonoBehaviour
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (player.gameObject)
+        if (player)
         {
             if (collision.collider.gameObject == player.gameObject)
             {

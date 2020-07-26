@@ -13,6 +13,7 @@ public class RampManager : MonoBehaviour
     float offsetYDistance;
 
     Transform player;
+    PlayerHealth health;
 
     bool movedRamp;
     float movedPlaneZPos;
@@ -26,10 +27,45 @@ public class RampManager : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-
+        health = player.GetComponent<PlayerHealth>();
         ResetPosition();
 
         //PlacePlane();
+        InvokeRepeating("CheckPlayerPosition", 5, 5);
+    }
+
+    void CheckPlayerPosition()
+    {
+        Transform ramp = null;
+
+        // recycle is on even number
+        if (numberOfRecycles % 5 == 0)
+        {
+            // position rampTwo
+            ramp = rampFive;
+        }
+        else if (numberOfRecycles % 5 == 1)
+        {
+            // position rampOne
+            ramp = rampFour;
+        }
+        else if (numberOfRecycles % 5 == 2)
+        {
+            ramp = rampThree;
+        }
+        else if (numberOfRecycles % 5 == 3)
+        {
+            ramp = rampTwo;
+        }
+        else
+        {
+            ramp = rampOne;
+        }
+
+        if (player.position.y < ramp.position.y - offsetYDistance)
+        {
+            health.WasHit(Vector3.one * 10, Vector3.one);
+        }
     }
 
     public void RecycleRamp(Transform ramp)
@@ -65,8 +101,6 @@ public class RampManager : MonoBehaviour
     void Update()
     {
         //Debug.Log(movedRamp);
-
-
         if (Time.time - lastMoveRampTime > 4 && (player.position.z % (offsetZDistance) > -2 && player.position.z % (offsetZDistance) < 2))
         {
             lastMoveRampTime = Time.time;

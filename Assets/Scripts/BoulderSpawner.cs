@@ -37,11 +37,11 @@ public class BoulderSpawner : MonoBehaviour
 
         //float scale = Random.Range(minSize, maxSize);
         float scale = maxSize;
-        float randomXPosition = Random.Range(-rampManager.rampWidth / 2, rampManager.rampWidth / 2);
+        float randomXPosition = Random.Range(-rampManager.rampWidth / 2 + scale / 4, rampManager.rampWidth / 2 - scale / 4);
         Vector3 location = new Vector3(randomXPosition, rampManager.GetTopRampPosition().y + scale / 2, rampManager.GetTopRampPosition().z);
 
 
-        GameObject boulder = Instantiate(boulderPrefabs[boulderIndex], location, Quaternion.Euler(new Vector3(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1))));
+        GameObject boulder = Instantiate(boulderPrefabs[boulderIndex], location, Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360))));
         boulder.transform.localScale = new Vector3(scale, scale, scale);
         Rigidbody rb = boulder.GetComponent<Rigidbody>();
         rb.AddForce(Vector3.back * boulderForce, ForceMode.VelocityChange);
