@@ -1,6 +1,7 @@
-﻿// Rigidbody based movement written by Dani
+﻿// Rigidbody based movement written by Dani and modified by An3
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -14,6 +15,12 @@ public class PlayerMovement : MonoBehaviour
     private float lastMovementTimer;
     private float timeBeforeRigidbodySleep = 1;
 
+    
+    // Arms
+    public Transform armsParent;
+    public Animator armsAnimator;
+    private Vector3 armsOffset;
+
     // Camera
     Vector3 cameraOffset;
 
@@ -25,6 +32,9 @@ public class PlayerMovement : MonoBehaviour
     //Movement
     public float moveSpeed = 4500;
     public float maxSpeed = 20;
+    public float startingMaxSpeed;
+    public float maximumMaxSpeed = 30;
+
     public bool grounded;
     public LayerMask whatIsGround;
 
@@ -47,6 +57,13 @@ public class PlayerMovement : MonoBehaviour
     float x, y;
     bool jumping, sprinting, crouching;
 
+    bool died = false;
+
+    // Audio
+    public AudioClip[] stepSounds;
+    public AudioSource audioSource;
+    public AudioClip backgroundTrack;
+
     //Sliding
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
@@ -56,22 +73,51 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    public void Die(float force, Vector3 direction)
+    {
+        died = false;
+        rb.constraints = RigidbodyConstraints.None;
+        rb.velocity = Vector3.zero;
+
+        armsAnimator.SetFloat("Speed", 0);
+        armsAnimator.SetTrigger("Die");
+
+        rb.AddForce(force * direction, ForceMode.Impulse);
+    }
+
+    public void PlayStepSound()
+    {
+        //if (!grounded)
+        //{
+        //    armsAnimator.SetFloat("Speed", 0)
+        //    return;
+        //}
+        float volume = Random.Range(0.4f, 0.7f);
+        audioSource.PlayOneShot(stepSounds[Random.Range(0, stepSounds.Length - 1)], volume);
+    }
+
     void Start()
     {
         playerScale = transform.localScale;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         cameraOffset = playerCam.position - transform.position;
+        armsOffset = armsParent.position - playerCam.position;
+        startingMaxSpeed = maxSpeed;
     }
 
 
     private void FixedUpdate()
     {
-        Movement();
+        if (!died)
+            Movement();
     }
 
     private void Update()
     {
+        if (died)
+            return;
+
         MyInput();
         Look();
     }
@@ -81,10 +127,10 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void MyInput()
     {
-        x = Input.GetAxisRaw("Horizontal");
+        //x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
-        jumping = Input.GetButton("Jump");
-        crouching = Input.GetKey(KeyCode.LeftControl);
+        //jumping = Input.GetButton("Jump");
+        //crouching = Input.GetKey(KeyCode.LeftControl);
 
         //Crouching
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -117,25 +163,33 @@ public class PlayerMovement : MonoBehaviour
 
     void LateUpdate()
     {
+        if (died)
+        {
+            return;
+        }
         playerCam.position = transform.position + cameraOffset;
+        armsParent.position = playerCam.position + armsOffset;
+        //armsParent.rotation = Quaternion.Euler(armsParent.rotation.eulerAngles.x, playerCam.rotation.eulerAngles.y, 0);
 
+        float speedValue = rb.velocity.magnitude / startingMaxSpeed;
+        armsAnimator.SetFloat("Speed", speedValue);
     }
 
     private void Movement()
     {
         // TODO: make rigidbody sleep when there's no movement for a second
-        if (x == 0 && y == 0 && !jumping)
-        {
-            if (lastMovementTimer >= timeBeforeRigidbodySleep)
-            {
-                rb.Sleep();
-                return;
-            }
-            lastMovementTimer += Time.deltaTime;
-        } else
-        {
-            lastMovementTimer = 0;
-        }
+        //if (x == 0 && y == 0 && !jumping)
+        //{
+        //    if (lastMovementTimer >= timeBeforeRigidbodySleep)
+        //    {
+        //        rb.Sleep();
+        //        return;
+        //    }
+        //    lastMovementTimer += Time.deltaTime;
+        //} else
+        //{
+        //    lastMovementTimer = 0;
+        //}
 
         //Extra gravity
         rb.AddForce(Vector3.down * Time.deltaTime * 10);
@@ -170,11 +224,11 @@ public class PlayerMovement : MonoBehaviour
         float multiplier = 1f, multiplierV = 1f;
 
         // Movement in air
-        if (!grounded)
-        {
-            multiplier = 0.5f;
-            multiplierV = 0.5f;
-        }
+        //if (!grounded)
+        //{
+        //    multiplier = 0.5f;
+        //    multiplierV = 0.5f;
+        //}
 
         // Movement while sliding
         if (grounded && crouching) multiplierV = 0f;
@@ -182,6 +236,8 @@ public class PlayerMovement : MonoBehaviour
         //Apply forces to move player
         rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * multiplier * multiplierV);
         rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
+
+        //rb.velocity = orientation.transform.forward * y * moveSpeed * Time.deltaTime;
     }
 
     private void Jump()
@@ -262,6 +318,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void ResetPlayerPosition()
+    {
+        transform.position = Vector3.zero + transform.lossyScale / 2;
+    }
+
     /// <summary>
     /// Find the velocity relative to where the player is looking
     /// Useful for vectors calculations regarding movement and limiting movement
@@ -275,9 +336,9 @@ public class PlayerMovement : MonoBehaviour
         float u = Mathf.DeltaAngle(lookAngle, moveAngle);
         float v = 90 - u;
 
-        float magnitue = rb.velocity.magnitude;
-        float yMag = magnitue * Mathf.Cos(u * Mathf.Deg2Rad);
-        float xMag = magnitue * Mathf.Cos(v * Mathf.Deg2Rad);
+        float magnitude = rb.velocity.magnitude;
+        float yMag = magnitude * Mathf.Cos(u * Mathf.Deg2Rad);
+        float xMag = magnitude * Mathf.Cos(v * Mathf.Deg2Rad);
 
         return new Vector2(xMag, yMag);
     }

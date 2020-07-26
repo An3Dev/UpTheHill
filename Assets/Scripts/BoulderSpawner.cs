@@ -16,6 +16,7 @@ public class BoulderSpawner : MonoBehaviour
     float timeBeforeSpawn;
 
     public RampManager rampManager;
+    public ScoreManager scoreManager;
 
     public float minSize, maxSize;
 
@@ -34,15 +35,24 @@ public class BoulderSpawner : MonoBehaviour
 
         // TODO: make the scale change according to the score
 
-        float scale = Random.Range(minSize, maxSize);
-        float randomXPosition = Random.Range(-rampManager.rampWidth / 2 + scale / 2, rampManager.rampWidth / 2 - scale / 2);
+        //float scale = Random.Range(minSize, maxSize);
+        float scale = maxSize;
+        float randomXPosition = Random.Range(-rampManager.rampWidth / 2, rampManager.rampWidth / 2);
         Vector3 location = new Vector3(randomXPosition, rampManager.GetTopRampPosition().y + scale / 2, rampManager.GetTopRampPosition().z);
-        GameObject boulder = Instantiate(boulderPrefabs[boulderIndex], location, Quaternion.identity);
+
+
+        GameObject boulder = Instantiate(boulderPrefabs[boulderIndex], location, Quaternion.Euler(new Vector3(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1))));
         boulder.transform.localScale = new Vector3(scale, scale, scale);
+        Rigidbody rb = boulder.GetComponent<Rigidbody>();
+        rb.AddForce(Vector3.back * boulderForce, ForceMode.VelocityChange);
+        rb.mass = scale / minSize * 1000;
 
-        timeBeforeSpawn = Random.Range(minTimeB4Spawn, maxTimeB4Spawn);
+        //timeBeforeSpawn = Random.Range(minTimeB4Spawn, maxTimeB4Spawn);
+        timeBeforeSpawn = 1;
 
-        boulder.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1) * boulderForce));
+        //boulder.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1) * boulderForce));
+
+
         // add a random force to the boulders;
         // add a particle system that creates dust behind the boulders
 

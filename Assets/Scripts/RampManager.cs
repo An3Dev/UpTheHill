@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RampManager : MonoBehaviour
 {
-    public Transform rampOne, rampTwo, rampThree, rampFour;
+    public Transform rampOne, rampTwo, rampThree, rampFour, rampFive;
     public Transform leftWall, rightWall;
 
     int numberOfRecycles = 0;
@@ -20,12 +20,28 @@ public class RampManager : MonoBehaviour
     float lastMoveRampTime;
 
     public float rampWidth = 30;
+    public BoulderSpawner boulderSpawner;
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
 
+        ResetPosition();
+
+        //PlacePlane();
+    }
+
+    public void RecycleRamp(Transform ramp)
+    {
+        ramp.position = new Vector3(ramp.position.x, ramp.position.y + (offsetYDistance * 4), ramp.position.z + offsetZDistance * 4);
+        // set hierarchy index
+        ramp.SetSiblingIndex(0);
+        numberOfRecycles++;
+    }
+
+    void ResetPosition()
+    {
         rampOne.localScale = new Vector3(rampWidth, rampOne.localScale.y, rampOne.localScale.z);
         rampTwo.localScale = new Vector3(rampWidth, rampOne.localScale.y, rampOne.localScale.z);
 
@@ -33,13 +49,16 @@ public class RampManager : MonoBehaviour
 
         rampFour.localScale = new Vector3(rampWidth, rampOne.localScale.y, rampOne.localScale.z);
 
+        rampFour.localScale = new Vector3(rampWidth, rampOne.localScale.y, rampOne.localScale.z);
+
+
         offsetZDistance = rampOne.lossyScale.z * Mathf.Sin((90 - rampOne.rotation.eulerAngles.x) * Mathf.Deg2Rad);
         offsetYDistance = Mathf.Abs(rampOne.lossyScale.z * Mathf.Sin(rampOne.rotation.eulerAngles.x * Mathf.Deg2Rad));
 
         rampTwo.position = new Vector3(rampTwo.position.x, rampOne.position.y - offsetYDistance, rampOne.position.z - offsetZDistance);
-        rampThree.position = new Vector3(rampThree.position.x, rampTwo.position.y -offsetYDistance, rampTwo.position.z -offsetZDistance);
+        rampThree.position = new Vector3(rampThree.position.x, rampTwo.position.y - offsetYDistance, rampTwo.position.z - offsetZDistance);
         rampFour.position = new Vector3(rampFour.position.x, rampThree.position.y - offsetYDistance, rampThree.position.z - offsetZDistance);
-        //PlacePlane();
+        rampFive.position = new Vector3(rampFive.position.x, rampFour.position.y - offsetYDistance, rampFour.position.z - offsetZDistance);
     }
 
     // Update is called once per frame
@@ -72,29 +91,43 @@ public class RampManager : MonoBehaviour
         Transform ramp = null;
 
         // recycle is on even number
-        if (numberOfRecycles % 4 == 0)
+        if (numberOfRecycles % 5 == 0)
         {
             // position rampTwo
-            ramp = rampFour;
-        } else if (numberOfRecycles % 4 == 1)
+            ramp = rampFive;
+        } else if (numberOfRecycles % 5 == 1)
         {
             // position rampOne
+            ramp = rampFour;
+        } else if (numberOfRecycles % 5 == 2)
+        {
             ramp = rampThree;
-        } else if (numberOfRecycles % 4 == 2)
+        } else if (numberOfRecycles % 5 == 3)
         {
             ramp = rampTwo;
         } else
         {
             ramp = rampOne;
         }
-        ramp.position = new Vector3(ramp.position.x, ramp.position.y + (offsetYDistance * 3), ramp.position.z + offsetZDistance * 3);
+
+        ramp.position = new Vector3(ramp.position.x, ramp.position.y + (offsetYDistance * 5), ramp.position.z + offsetZDistance * 5);
+
+        //if (ramp.position.z > 2000)
+        //{
+        //    numberOfRecycles = 0;
+        //    ResetPosition();
+        //}
+
         // set hierarchy index
         ramp.SetSiblingIndex(0);
         numberOfRecycles++;
     }
 
-    public void OnTriggerExit(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
-        //PlacePlane();
+        if (other.gameObject == player.gameObject)
+        {
+            player.GetComponent<PlayerHealth>().WasHit(Vector3.zero, Vector3.zero);
+        }
     }
 }
