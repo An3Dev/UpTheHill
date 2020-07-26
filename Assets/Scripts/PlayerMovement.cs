@@ -68,6 +68,14 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 normalVector = Vector3.up;
     private Vector3 wallNormalVector;
 
+
+    public bool usingSpeedBoost = false;
+    public LayerMask groundLayerMask;
+
+    public float speedBoostMaxTime = 10;
+    float powerUpTimer = 0;
+    public float speedBoostSpeed = 80;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -92,8 +100,11 @@ public class PlayerMovement : MonoBehaviour
         //    armsAnimator.SetFloat("Speed", 0)
         //    return;
         //}
-        float volume = Random.Range(0.4f, 0.7f);
-        audioSource.PlayOneShot(stepSounds[Random.Range(0, stepSounds.Length - 1)], volume);
+        if (grounded)
+        {
+            float volume = Random.Range(0.4f, 0.7f);
+            audioSource.PlayOneShot(stepSounds[Random.Range(0, stepSounds.Length - 1)], volume);
+        }
     }
 
     void Start()
@@ -118,6 +129,32 @@ public class PlayerMovement : MonoBehaviour
         if (died)
             return;
 
+        if (usingSpeedBoost)
+        {
+            powerUpTimer += Time.deltaTime;
+            if (powerUpTimer > speedBoostMaxTime)
+            {
+                powerUpTimer = 0;
+                maxSpeed = maximumMaxSpeed;
+                usingSpeedBoost = false;
+            }
+        }
+        if (!grounded)
+        {
+            RaycastHit hit = new RaycastHit();
+            Physics.queriesHitTriggers = false;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, 10, groundLayerMask))
+            {
+                grounded = true;
+            } else
+            {
+                armsAnimator.SetFloat("Speed", 0);
+            }
+            Physics.queriesHitTriggers = true;
+        }
+
+
+
         MyInput();
         Look();
     }
@@ -129,14 +166,15 @@ public class PlayerMovement : MonoBehaviour
     {
         //x = Input.GetAxisRaw("Horizontal");
         y = Input.GetAxisRaw("Vertical");
+        y = Mathf.Clamp(y, 0, 1);
         //jumping = Input.GetButton("Jump");
         //crouching = Input.GetKey(KeyCode.LeftControl);
 
         //Crouching
-        if (Input.GetKeyDown(KeyCode.LeftControl))
-            StartCrouch();
-        if (Input.GetKeyUp(KeyCode.LeftControl))
-            StopCrouch();
+        //if (Input.GetKeyDown(KeyCode.LeftControl))
+        //    StartCrouch();
+        //if (Input.GetKeyUp(KeyCode.LeftControl))
+        //    StopCrouch();
     }
 
     private void StartCrouch()
@@ -152,6 +190,15 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.AddForce(orientation.transform.forward * slideForce);
             }
+        }
+    }
+
+    public void CollectPowerUp(PowerUp.PowerUpType type)
+    {
+        if (type == PowerUp.PowerUpType.Speed)
+        {
+            maxSpeed = speedBoostSpeed;
+            usingSpeedBoost = true;
         }
     }
 
@@ -172,6 +219,7 @@ public class PlayerMovement : MonoBehaviour
         //armsParent.rotation = Quaternion.Euler(armsParent.rotation.eulerAngles.x, playerCam.rotation.eulerAngles.y, 0);
 
         float speedValue = rb.velocity.magnitude / startingMaxSpeed;
+        //speedValue = Mathf.Clamp(speedValue, 0, 10);
         armsAnimator.SetFloat("Speed", speedValue);
     }
 
@@ -192,7 +240,10 @@ public class PlayerMovement : MonoBehaviour
         //}
 
         //Extra gravity
-        rb.AddForce(Vector3.down * Time.deltaTime * 10);
+        if (!grounded)
+        {
+            rb.AddForce(Vector3.down * Time.deltaTime * 1000);
+        }
 
         //Find actual velocity relative to where player is looking
         Vector2 mag = FindVelRelativeToLook();
@@ -234,8 +285,15 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && crouching) multiplierV = 0f;
 
         //Apply forces to move player
-        rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * multiplier * multiplierV);
-        rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
+        if (y > 0)
+        {
+            rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * multiplier * multiplierV);
+            rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
+        } else
+        {
+            //Debug.Log("Test");
+        }
+
 
         //rb.velocity = orientation.transform.forward * y * moveSpeed * Time.deltaTime;
     }
@@ -292,11 +350,11 @@ public class PlayerMovement : MonoBehaviour
         if (!grounded || jumping) return;
 
         //Slow down sliding
-        if (crouching)
-        {
-            rb.AddForce(moveSpeed * Time.deltaTime * -rb.velocity.normalized * slideCounterMovement);
-            return;
-        }
+        //if (crouching)
+        //{
+        //    rb.AddForce(moveSpeed * Time.deltaTime * -rb.velocity.normalized * slideCounterMovement);
+        //    return;
+        //}
 
         //Counter movement
         if (Math.Abs(mag.x) > threshold && Math.Abs(x) < 0.05f || (mag.x < -threshold && x > 0) || (mag.x > threshold && x < 0))
@@ -308,14 +366,14 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveSpeed * orientation.transform.forward * Time.deltaTime * -mag.y * counterMovement);
         }
 
-        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-        //Limit diagonal running. This will also cause a full stop if sliding fast and un-crouching, so not optimal.
-        if (flatVelocity.sqrMagnitude > maxSpeed * maxSpeed)
-        {
-            float fallspeed = rb.velocity.y;
-            Vector3 n = rb.velocity.normalized * maxSpeed;
-            rb.velocity = new Vector3(n.x, fallspeed, n.z);
-        }
+        //Vector3 flatVelocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        ////Limit diagonal running. This will also cause a full stop if sliding fast and un-crouching, so not optimal.
+        //if (flatVelocity.sqrMagnitude > maxSpeed * maxSpeed)
+        //{
+        //    float fallspeed = rb.velocity.y;
+        //    Vector3 n = rb.velocity.normalized * maxSpeed;
+        //    rb.velocity = new Vector3(n.x, fallspeed, n.z);
+        //}
     }
 
     public void ResetPlayerPosition()

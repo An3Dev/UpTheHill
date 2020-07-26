@@ -23,6 +23,8 @@ public class BoulderSpawner : MonoBehaviour
     float timer;
 
     public float boulderForce = 10;
+    public float maxSizePointAmount = 150;
+    public float minBoulderForce = 40, maxBoulderForce = 100;
 
     public void Start()
     {
@@ -35,9 +37,15 @@ public class BoulderSpawner : MonoBehaviour
 
         // TODO: make the scale change according to the score
 
-        //float scale = Random.Range(minSize, maxSize);
-        float scale = maxSize;
-        float randomXPosition = Random.Range(-rampManager.rampWidth / 2 + scale / 4, rampManager.rampWidth / 2 - scale / 4);
+
+        float pointPercentage = scoreManager.currentScore / maxSizePointAmount;
+        float scale = pointPercentage * maxSize;
+        scale = Mathf.Clamp(scale, minSize, maxSize);
+
+        boulderForce = pointPercentage * maxBoulderForce;
+        boulderForce = Mathf.Clamp(boulderForce, minBoulderForce, maxBoulderForce);
+
+        float randomXPosition = Random.Range(-rampManager.rampWidth / 2 + scale / 2, rampManager.rampWidth / 2 - scale / 2);
         Vector3 location = new Vector3(randomXPosition, rampManager.GetTopRampPosition().y + scale / 2, rampManager.GetTopRampPosition().z);
 
 

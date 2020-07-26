@@ -12,7 +12,7 @@ public class ScoreManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText, highScoreText;
 
-    int currentScore = 0;
+    public int currentScore = 0;
     string highScoreKey = "HighScore";
 
     public AudioSource bgMusicSource;
@@ -37,11 +37,14 @@ public class ScoreManager : MonoBehaviour
     {
         AddToScore(1);
 
-        movement.maxSpeed += speedIncreasePerStride;
+        if (!movement.usingSpeedBoost)
+        {
+            movement.maxSpeed += speedIncreasePerStride;
+        }
 
         movement.PlayStepSound();
 
-        if (movement.maxSpeed > movement.maximumMaxSpeed)
+        if (movement.maxSpeed > movement.maximumMaxSpeed && !movement.usingSpeedBoost)
         {
             movement.maxSpeed = movement.maximumMaxSpeed;
         }

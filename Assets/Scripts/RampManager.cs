@@ -23,6 +23,10 @@ public class RampManager : MonoBehaviour
     public float rampWidth = 30;
     public BoulderSpawner boulderSpawner;
 
+    GameObject[] powerUpPrefabs;
+
+    GameObject powerUpParent;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +35,18 @@ public class RampManager : MonoBehaviour
         ResetPosition();
 
         //PlacePlane();
-        InvokeRepeating("CheckPlayerPosition", 5, 5);
+        InvokeRepeating("CheckPlayerPosition", 5, 1);
+    }
+
+    void SpawnPowerUp()
+    {
+        int index = Random.Range(0, powerUpPrefabs.Length - 1);
+
+        float randomXPosition = Random.Range(-rampWidth / 2 + 1, rampWidth / 2 - 1);
+        Vector3 topRampPos = GetTopRampPosition();
+        Vector3 location = new Vector3(randomXPosition, topRampPos.y + 1, topRampPos.z);
+
+        GameObject powerUp = Instantiate(powerUpPrefabs[index], location, Quaternion.identity, powerUpParent.transform);
     }
 
     void CheckPlayerPosition()
@@ -101,7 +116,7 @@ public class RampManager : MonoBehaviour
     void Update()
     {
         //Debug.Log(movedRamp);
-        if (Time.time - lastMoveRampTime > 4 && (player.position.z % (offsetZDistance) > -2 && player.position.z % (offsetZDistance) < 2))
+        if (Time.time - lastMoveRampTime > 2 && (player.position.z % (offsetZDistance) > -20 && player.position.z % (offsetZDistance) < 20))
         {
             lastMoveRampTime = Time.time;
             PlacePlane();
