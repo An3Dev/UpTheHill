@@ -17,9 +17,9 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0, g: 0, b: 0, a: 1}
   m_FogMode: 2
-  m_FogDensity: 0.008
-  m_LinearFogStart: 40
-  m_LinearFogEnd: 74.2
+  m_FogDensity: 0.04
+  m_LinearFogStart: 9.1
+  m_LinearFogEnd: 37.309998
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
@@ -527,9 +527,9 @@ MonoBehaviour:
   armsAnimator: {fileID: 3468184503450104244}
   sensitivity: 75
   moveSpeed: 15000
-  maxSpeed: 25
-  startingMaxSpeed: 0
-  maximumMaxSpeed: 35
+  maxSpeed: 20
+  startingMaxSpeed: 20
+  maximumMaxSpeed: 30
   grounded: 1
   whatIsGround:
     serializedVersion: 2
@@ -549,7 +549,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   speedBoostMaxTime: 10
-  speedBoostSpeed: 80
+  speedBoostSpeed: 55
   hitSound: {fileID: 8300000, guid: 2c02100a90af1ef44a30f3a60882b227, type: 3}
   speedSound: {fileID: 8300000, guid: af10d69904b1dc947b5aba136a424838, type: 3}
   regularSpeedSound: {fileID: 8300000, guid: 096c84ae4b015a04b9ad07bfef524ff1, type: 3}
@@ -1848,8 +1848,8 @@ MonoBehaviour:
   maxSize: 10
   boulderForce: 40
   maxSizePointAmount: 150
-  minBoulderForce: 40
-  maxBoulderForce: 40
+  minBoulderForce: 60
+  maxBoulderForce: 150
 --- !u!1 &1398895548
 GameObject:
   m_ObjectHideFlags: 0

@@ -35,9 +35,6 @@ public class BoulderSpawner : MonoBehaviour
     {
         int boulderIndex = Random.Range(0, boulderPrefabs.Length - 1);
 
-        // TODO: make the scale change according to the score
-
-
         float pointPercentage = scoreManager.currentScore / maxSizePointAmount;
         float scale = pointPercentage * maxSize;
         scale = Mathf.Clamp(scale, minSize, maxSize);
@@ -52,6 +49,7 @@ public class BoulderSpawner : MonoBehaviour
         GameObject boulder = Instantiate(boulderPrefabs[boulderIndex], location, Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360))));
         boulder.transform.localScale = new Vector3(scale, scale, scale);
         Rigidbody rb = boulder.GetComponent<Rigidbody>();
+        Vector3 dir = new Vector3(0, -0.8f, -0.2f);
         rb.AddForce(Vector3.back * boulderForce, ForceMode.VelocityChange);
         rb.mass = scale / minSize * 1000;
 

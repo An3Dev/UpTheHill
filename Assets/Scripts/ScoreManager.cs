@@ -19,18 +19,22 @@ public class ScoreManager : MonoBehaviour
 
     int highScore = 0;
 
+    float maxFogDensity;
+
     // Start is called before the first frame update
     void Start()
     {
         // gets high score
         highScore = PlayerPrefs.GetInt(highScoreKey, 0);
         highScoreText.text = "Best: " + highScore.ToString("00000");
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        //RenderSettings.fogDensity   
     }
 
     public void Stride()

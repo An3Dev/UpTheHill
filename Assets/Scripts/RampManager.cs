@@ -118,7 +118,7 @@ public class RampManager : MonoBehaviour
     void Update()
     {
         //Debug.Log(movedRamp);
-        if (Time.time - lastMoveRampTime > 2 && (player.position.z % (offsetZDistance) > -20 && player.position.z % (offsetZDistance) < 20))
+        if (Time.time - lastMoveRampTime > 1 && (player.position.z % (offsetZDistance) > -5 && player.position.z % (offsetZDistance) < 5))
         {
             lastMoveRampTime = Time.time;
             PlacePlane();
