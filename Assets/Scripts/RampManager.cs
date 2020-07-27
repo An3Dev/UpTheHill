@@ -23,9 +23,11 @@ public class RampManager : MonoBehaviour
     public float rampWidth = 30;
     public BoulderSpawner boulderSpawner;
 
-    GameObject[] powerUpPrefabs;
+    public GameObject[] powerUpPrefabs;
 
-    GameObject powerUpParent;
+    public GameObject powerUpParent;
+
+    float powerUpProbability = 30;
 
     // Start is called before the first frame update
     void Start()
@@ -44,9 +46,9 @@ public class RampManager : MonoBehaviour
 
         float randomXPosition = Random.Range(-rampWidth / 2 + 1, rampWidth / 2 - 1);
         Vector3 topRampPos = GetTopRampPosition();
-        Vector3 location = new Vector3(randomXPosition, topRampPos.y + 1, topRampPos.z);
+        Vector3 location = new Vector3(randomXPosition, topRampPos.y + 3, topRampPos.z);
 
-        GameObject powerUp = Instantiate(powerUpPrefabs[index], location, Quaternion.identity, powerUpParent.transform);
+        GameObject powerUp = Instantiate(powerUpPrefabs[index], location, Quaternion.identity);
     }
 
     void CheckPlayerPosition()
@@ -161,11 +163,11 @@ public class RampManager : MonoBehaviour
 
         ramp.position = new Vector3(ramp.position.x, ramp.position.y + (offsetYDistance * 5), ramp.position.z + offsetZDistance * 5);
 
-        //if (ramp.position.z > 2000)
-        //{
-        //    numberOfRecycles = 0;
-        //    ResetPosition();
-        //}
+        bool spawnPowerUp = Random.Range(0, 100) <= powerUpProbability;
+        if (spawnPowerUp)
+        {
+            SpawnPowerUp();
+        }
 
         // set hierarchy index
         ramp.SetSiblingIndex(0);

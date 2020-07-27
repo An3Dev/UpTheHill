@@ -10,15 +10,25 @@ public class PlayerHealth : MonoBehaviour
     public Animator canvasAnimator;
     PlayerMovement playerMovement;
 
-    public float deathForce = 500;
-    float maxDeathForce = 50;
-    float minDeathForce = 20;
+    public float deathForce = 10;
+    float maxDeathForce = 20;
+    float minDeathForce = 5;
 
+
+    public void Awake()
+    {
+
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        if (Time.time < 0.0000001f)
+        {
+            Restart();
+        }
         playerMovement = GetComponent<PlayerMovement>();
+
     }
 
     // Update is called once per frame
@@ -33,6 +43,11 @@ public class PlayerHealth : MonoBehaviour
 
         if (health <= 0)
         {
+            // 
+            if (scale != Vector3.zero)
+            {
+                playerMovement.PlayBoulderHitSound();
+            }
             // disable movement
             playerMovement.Die(scale.x * deathForce, direction);
 

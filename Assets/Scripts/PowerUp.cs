@@ -33,7 +33,6 @@ public class PowerUp : MonoBehaviour
             player = GameObject.FindGameObjectWithTag("Player");
         }
 
-        Debug.Log(other);
         if (other.gameObject == player && ! collected)
         {
             StartCoroutine(Shrink(transform.localScale.x));

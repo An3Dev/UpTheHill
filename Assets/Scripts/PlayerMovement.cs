@@ -76,6 +76,9 @@ public class PlayerMovement : MonoBehaviour
     float powerUpTimer = 0;
     public float speedBoostSpeed = 80;
 
+    public AudioClip hitSound, speedSound, regularSpeedSound;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -107,6 +110,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void PlayBoulderHitSound()
+    {
+        audioSource.PlayOneShot(hitSound);
+    }
+
     void Start()
     {
         playerScale = transform.localScale;
@@ -131,29 +139,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (usingSpeedBoost)
         {
-            powerUpTimer += Time.deltaTime;
+            powerUpTimer += Time.unscaledDeltaTime;
             if (powerUpTimer > speedBoostMaxTime)
             {
                 powerUpTimer = 0;
                 maxSpeed = maximumMaxSpeed;
                 usingSpeedBoost = false;
+                audioSource.PlayOneShot(regularSpeedSound);
             }
         }
-        if (!grounded)
-        {
-            RaycastHit hit = new RaycastHit();
-            Physics.queriesHitTriggers = false;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, 10, groundLayerMask))
-            {
-                grounded = true;
-            } else
-            {
-                armsAnimator.SetFloat("Speed", 0);
-            }
-            Physics.queriesHitTriggers = true;
-        }
-
-
 
         MyInput();
         Look();
@@ -199,6 +193,10 @@ public class PlayerMovement : MonoBehaviour
         {
             maxSpeed = speedBoostSpeed;
             usingSpeedBoost = true;
+            audioSource.PlayOneShot(speedSound);
+        } else if (type == PowerUp.PowerUpType.Time)
+        {
+            Time.timeScale = 0.1f;
         }
     }
 
@@ -285,14 +283,14 @@ public class PlayerMovement : MonoBehaviour
         if (grounded && crouching) multiplierV = 0f;
 
         //Apply forces to move player
-        if (y > 0)
-        {
+        //if (y > 0)
+        //{
             rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * multiplier * multiplierV);
             rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
-        } else
-        {
-            //Debug.Log("Test");
-        }
+        //} else
+        //{
+        //    //Debug.Log("Test");
+        //}
 
 
         //rb.velocity = orientation.transform.forward * y * moveSpeed * Time.deltaTime;
@@ -418,18 +416,22 @@ public class PlayerMovement : MonoBehaviour
         int layer = other.gameObject.layer;
         if (whatIsGround != (whatIsGround | (1 << layer))) return;
 
+
+        grounded = true;
+        cancellingGrounded = false;
+        Vector3 normal = other.contacts[0].normal;
+        normalVector = normal;
+        CancelInvoke(nameof(StopGrounded));
+
         //Iterate through every collision in a physics update
         for (int i = 0; i < other.contactCount; i++)
         {
-            Vector3 normal = other.contacts[i].normal;
+            
             //FLOOR
-            if (IsFloor(normal))
-            {
-                grounded = true;
-                cancellingGrounded = false;
-                normalVector = normal;
-                CancelInvoke(nameof(StopGrounded));
-            }
+            //if (IsFloor(normal))
+            //{
+
+            //}
         }
 
         //Invoke ground/wall cancel, since we can't check normals with CollisionExit
@@ -437,7 +439,24 @@ public class PlayerMovement : MonoBehaviour
         if (!cancellingGrounded)
         {
             cancellingGrounded = true;
-            Invoke(nameof(StopGrounded), Time.deltaTime * delay);
+
+            if (!grounded)
+            {
+                RaycastHit hit = new RaycastHit();
+                Physics.queriesHitTriggers = false;
+                if (Physics.Raycast(transform.position, Vector3.down, out hit, 10, groundLayerMask))
+                {
+                    grounded = true;
+                }
+                else
+                {
+                    armsAnimator.SetFloat("Speed", 0);
+                    Invoke(nameof(StopGrounded), Time.deltaTime * delay);
+
+                }
+                Physics.queriesHitTriggers = true;
+            }
+
         }
     }
 
