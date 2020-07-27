@@ -94,6 +94,7 @@ public class PlayerMovement : MonoBehaviour
         armsAnimator.SetTrigger("Die");
 
         rb.AddForce(force * direction, ForceMode.Impulse);
+
     }
 
     public void PlayStepSound()

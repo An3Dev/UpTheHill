@@ -68,7 +68,6 @@ public class BoulderSpawner : MonoBehaviour
 
     void SpawnBoulder()
     {
-        Debug.Log("Spawn");
         int boulderIndex = Random.Range(0, boulderPrefabs.Length - 1);
         float pointPercentage;
 

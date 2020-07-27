@@ -18,13 +18,13 @@ public class ScoreManager : MonoBehaviour
 
     public AudioSource bgMusicSource;
 
-    bool muteBG = false;
+    bool muteBG = false, muteAll = false;
 
     int highScore = 0;
 
     float maxFogDensity;
 
-
+    Camera main;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +33,11 @@ public class ScoreManager : MonoBehaviour
         highScore = PlayerPrefs.GetInt(highScoreKey, 0);
         highScoreText.text = "Best: " + highScore.ToString("00000");
         muteBG = bool.Parse(PlayerPrefs.GetString("MuteBGMusic", "false"));
+        muteAll = bool.Parse(PlayerPrefs.GetString("MuteAll", "false"));
+
+        main = Camera.main;
+
+        main.GetComponent<AudioListener>().enabled = !muteAll;
 
         bgMusicSource.mute = muteBG;
     }

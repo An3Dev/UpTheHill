@@ -33,16 +33,19 @@ public class RampManager : MonoBehaviour
 
     public bool inMenu = false;
 
-    public TextMeshProUGUI sfxText, bgText;
+    public TextMeshProUGUI allText, bgText;
 
-    bool muteSFX = false, muteBGMusic = false;
+    bool muteAll = false, muteBGMusic = false;
 
-    string muteSFXKey = "MuteSFX", muteBGMusicKey = "MuteBGMusic";
+    string muteAllKey = "MuteAll", muteBGMusicKey = "MuteBGMusic";
 
     public AudioSource bgMusicSource;
+
+    Camera main;
     // Start is called before the first frame update
     void Start()
     {
+        main = Camera.main;
         ResetPosition();
 
         if (!inMenu)
@@ -57,18 +60,20 @@ public class RampManager : MonoBehaviour
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            muteSFX = bool.Parse(PlayerPrefs.GetString(muteSFXKey, "false"));
+            muteAll = bool.Parse(PlayerPrefs.GetString(muteAllKey, "false"));
             muteBGMusic = bool.Parse(PlayerPrefs.GetString(muteBGMusicKey, "false"));
 
             bgMusicSource.mute = muteBGMusic;
 
-            if (muteSFX)
+            main.GetComponent<AudioListener>().enabled = !muteAll;
+
+            if (muteAll)
             {
-                sfxText.text = "Unmute SFX";
+                allText.text = "Unmute ALL";
             }
             else
             {
-                sfxText.text = "Mute SFX";
+                allText.text = "Mute ALL";
             }
 
             if (muteBGMusic)
@@ -84,17 +89,20 @@ public class RampManager : MonoBehaviour
     }
 
     // toggle
-    public void MuteSFX()
+    public void MuteAll()
     {
-        muteSFX = !muteSFX;
-        if (muteSFX)
+        muteAll = !muteAll;
+        if (muteAll)
         {
-            sfxText.text = "Unmute SFX";
+            allText.text = "Unmute All";
         } else
         {
-            sfxText.text = "Mute SFX";
+            allText.text = "Mute all";
         }
-        PlayerPrefs.SetString(muteSFXKey, muteSFX.ToString());
+
+        main.GetComponent<AudioListener>().enabled = !muteAll;
+
+        PlayerPrefs.SetString(muteAllKey, muteAll.ToString());
         PlayerPrefs.Save();
     }
 
