@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public Transform orientation;
 
     //Other
-    private Rigidbody rb;
+    public Rigidbody rb;
     private float lastMovementTimer;
     private float timeBeforeRigidbodySleep = 1;
 
@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Die(float force, Vector3 direction)
     {
-        died = false;
+        died = true;
         rb.constraints = RigidbodyConstraints.None;
         rb.velocity = Vector3.zero;
 

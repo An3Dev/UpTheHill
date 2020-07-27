@@ -6,7 +6,7 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
 
-    float speedIncreasePerStride = 0.1f;
+    float speedIncreasePerStride = 0.5f;
 
     public PlayerMovement movement;
 

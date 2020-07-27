@@ -26,8 +26,8 @@ public class DeathBarrier : MonoBehaviour
 
     void CheckSpeed()
     {
-        speed = playerMovement.maxSpeed - 0.4f;
-        Invoke("CheckSpeed", 5);
+        speed = playerMovement.rb.velocity.magnitude;
+        Invoke("CheckSpeed", 3);
     }
 
     public void FixedUpdate()

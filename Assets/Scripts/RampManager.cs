@@ -27,7 +27,8 @@ public class RampManager : MonoBehaviour
 
     public GameObject powerUpParent;
 
-    float powerUpProbability = 30;
+    float powerUpProbability = 40;
+    PlayerMovement playerMovement;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +36,7 @@ public class RampManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         health = player.GetComponent<PlayerHealth>();
         ResetPosition();
-
+        playerMovement = player.GetComponent<PlayerMovement>();
         //PlacePlane();
         InvokeRepeating("CheckPlayerPosition", 5, 1);
     }
@@ -164,6 +165,12 @@ public class RampManager : MonoBehaviour
         ramp.position = new Vector3(ramp.position.x, ramp.position.y + (offsetYDistance * 5), ramp.position.z + offsetZDistance * 5);
 
         bool spawnPowerUp = Random.Range(0, 100) <= powerUpProbability;
+
+        if (playerMovement.usingSpeedBoost)
+        {
+            spawnPowerUp = false;
+        }
+
         if (spawnPowerUp)
         {
             SpawnPowerUp();

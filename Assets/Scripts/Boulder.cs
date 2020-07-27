@@ -6,6 +6,7 @@ public class Boulder : MonoBehaviour
 {
     Transform player;
     PlayerHealth health;
+    public AudioSource audioSource;
     //Color[] colors;
     //MeshRenderer renderer;
 
@@ -18,6 +19,7 @@ public class Boulder : MonoBehaviour
 
         health = player.GetComponent<PlayerHealth>();
 
+        audioSource.pitch += Random.Range(-.1f, .1f);
         //int colorIndex = Random.Range(0, colors.Length - 1);
         //renderer.materials[1].color = colors[colorIndex];
 

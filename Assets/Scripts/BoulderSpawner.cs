@@ -11,7 +11,7 @@ public class BoulderSpawner : MonoBehaviour
 
     float spawnTime = 2;
 
-    public float minTimeB4Spawn = 2, maxTimeB4Spawn = 7;
+    public float minTimeB4Spawn = 0.5f, maxTimeB4Spawn = 1;
 
     float timeBeforeSpawn;
 
@@ -23,7 +23,7 @@ public class BoulderSpawner : MonoBehaviour
     float timer;
 
     public float boulderForce = 10;
-    public float maxSizePointAmount = 150;
+    public float maxSizePointAmount = 200;
     public float minBoulderForce = 40, maxBoulderForce = 100;
 
     public void Start()
@@ -49,12 +49,13 @@ public class BoulderSpawner : MonoBehaviour
         GameObject boulder = Instantiate(boulderPrefabs[boulderIndex], location, Quaternion.Euler(new Vector3(Random.Range(0, 360), Random.Range(0, 360), Random.Range(0, 360))));
         boulder.transform.localScale = new Vector3(scale, scale, scale);
         Rigidbody rb = boulder.GetComponent<Rigidbody>();
-        Vector3 dir = new Vector3(0, -0.8f, -0.2f);
-        rb.AddForce(Vector3.back * boulderForce, ForceMode.VelocityChange);
+        Vector3 dir = new Vector3(0, -0.6f, -0.4f);
+        rb.AddForce(dir * boulderForce, ForceMode.VelocityChange);
         rb.mass = scale / minSize * 1000;
 
         //timeBeforeSpawn = Random.Range(minTimeB4Spawn, maxTimeB4Spawn);
-        timeBeforeSpawn = 1;
+        timeBeforeSpawn = (1 - pointPercentage) * maxTimeB4Spawn;
+        timeBeforeSpawn = Mathf.Clamp(timeBeforeSpawn, minTimeB4Spawn, maxTimeB4Spawn);
 
         //boulder.GetComponent<Rigidbody>().AddForce(new Vector3(Random.Range(0, 1), Random.Range(0, 1), Random.Range(0, 1) * boulderForce));
 

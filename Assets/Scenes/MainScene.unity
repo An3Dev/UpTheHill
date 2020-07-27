@@ -523,6 +523,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCam: {fileID: 80655195}
   orientation: {fileID: 733636677}
+  rb: {fileID: 0}
   armsParent: {fileID: 257367847}
   armsAnimator: {fileID: 3468184503450104244}
   sensitivity: 75
@@ -678,7 +679,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!4 &297949754
 Transform:
   m_ObjectHideFlags: 0
@@ -842,7 +843,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 20273cf31a93ce848b4117d44f667cba, type: 3}
+  m_audioClip: {fileID: 8300000, guid: b534d0f3c7a14364e8695301166b520f, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.195
   m_Pitch: 1
@@ -1614,7 +1615,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 0
   MinDistance: 133.6
-  MaxDistance: 294.26
+  MaxDistance: 187.43
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -1643,7 +1644,7 @@ AudioSource:
       outWeight: 0.34742114
     - serializedVersion: 3
       time: 1
-      value: 0.014312744
+      value: 0
       inSlope: -0.080156244
       outSlope: -0.080156244
       tangentMode: 0
@@ -1840,16 +1841,16 @@ MonoBehaviour:
   boulderPrefabs:
   - {fileID: 4071992448973465338, guid: 8bd1a6024764b15469e2d7879b646dc8, type: 3}
   - {fileID: 4071992448973465338, guid: e5c2cf0ff79e16a45aeea0e622ed946b, type: 3}
-  minTimeB4Spawn: 0.5
-  maxTimeB4Spawn: 3
+  minTimeB4Spawn: 0.75
+  maxTimeB4Spawn: 1.25
   rampManager: {fileID: 1102604223}
   scoreManager: {fileID: 3468184503450104245}
-  minSize: 5
+  minSize: 7
   maxSize: 10
-  boulderForce: 40
-  maxSizePointAmount: 150
-  minBoulderForce: 60
-  maxBoulderForce: 150
+  boulderForce: 100
+  maxSizePointAmount: 200
+  minBoulderForce: 300
+  maxBoulderForce: 700
 --- !u!1 &1398895548
 GameObject:
   m_ObjectHideFlags: 0
