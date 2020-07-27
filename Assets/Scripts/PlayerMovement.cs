@@ -123,6 +123,9 @@ public class PlayerMovement : MonoBehaviour
         cameraOffset = playerCam.position - transform.position;
         armsOffset = armsParent.position - playerCam.position;
         startingMaxSpeed = maxSpeed;
+
+        Application.targetFrameRate = -1;
+        QualitySettings.vSyncCount = 0;
     }
 
 
@@ -194,6 +197,7 @@ public class PlayerMovement : MonoBehaviour
             maxSpeed = speedBoostSpeed;
             usingSpeedBoost = true;
             audioSource.PlayOneShot(speedSound);
+            powerUpTimer = 0;
         } else if (type == PowerUp.PowerUpType.Time)
         {
             Time.timeScale = 0.1f;

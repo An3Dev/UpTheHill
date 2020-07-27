@@ -14,6 +14,7 @@ public class DeathBarrier : MonoBehaviour
     Transform player;
     PlayerHealth playerHealth;
     PlayerMovement playerMovement;
+    float minimumSpeed = 3;
 
     public void Start()
     {
@@ -26,7 +27,8 @@ public class DeathBarrier : MonoBehaviour
 
     void CheckSpeed()
     {
-        speed = playerMovement.rb.velocity.magnitude;
+        speed = playerMovement.rb.velocity.magnitude - 0.25f;
+        speed = Mathf.Clamp(speed, playerMovement.startingMaxSpeed, playerMovement.maximumMaxSpeed);
         Invoke("CheckSpeed", 3);
     }
 

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
+using TMPro;
 public class RampManager : MonoBehaviour
 {
     public Transform rampOne, rampTwo, rampThree, rampFour, rampFive;
@@ -30,15 +31,91 @@ public class RampManager : MonoBehaviour
     float powerUpProbability = 40;
     PlayerMovement playerMovement;
 
+    public bool inMenu = false;
+
+    public TextMeshProUGUI sfxText, bgText;
+
+    bool muteSFX = false, muteBGMusic = false;
+
+    string muteSFXKey = "MuteSFX", muteBGMusicKey = "MuteBGMusic";
+
+    public AudioSource bgMusicSource;
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        health = player.GetComponent<PlayerHealth>();
         ResetPosition();
-        playerMovement = player.GetComponent<PlayerMovement>();
+
+        if (!inMenu)
+        {
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+            health = player.GetComponent<PlayerHealth>();
+            playerMovement = player.GetComponent<PlayerMovement>();
+            InvokeRepeating("CheckPlayerPosition", 5, 1);
+        }
+
+        if (inMenu)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            muteSFX = bool.Parse(PlayerPrefs.GetString(muteSFXKey, "false"));
+            muteBGMusic = bool.Parse(PlayerPrefs.GetString(muteBGMusicKey, "false"));
+
+            bgMusicSource.mute = muteBGMusic;
+
+            if (muteSFX)
+            {
+                sfxText.text = "Unmute SFX";
+            }
+            else
+            {
+                sfxText.text = "Mute SFX";
+            }
+
+            if (muteBGMusic)
+            {
+                bgText.text = "Unmute BG music";
+            }
+            else
+            {
+                bgText.text = "Mute BG music";
+            }
+        }
         //PlacePlane();
-        InvokeRepeating("CheckPlayerPosition", 5, 1);
+    }
+
+    // toggle
+    public void MuteSFX()
+    {
+        muteSFX = !muteSFX;
+        if (muteSFX)
+        {
+            sfxText.text = "Unmute SFX";
+        } else
+        {
+            sfxText.text = "Mute SFX";
+        }
+        PlayerPrefs.SetString(muteSFXKey, muteSFX.ToString());
+        PlayerPrefs.Save();
+    }
+
+    // toggle
+    public void MuteBGMusic()
+    {
+        muteBGMusic = !muteBGMusic;
+
+        bgMusicSource.mute = muteBGMusic;
+
+        if (muteBGMusic)
+        {
+            bgText.text = "Unmute BG music";
+        }
+        else
+        {
+            bgText.text = "Mute BG music";
+            bgMusicSource.Play();
+        }
+        PlayerPrefs.SetString(muteBGMusicKey, muteBGMusic.ToString());
+        PlayerPrefs.Save();
     }
 
     void SpawnPowerUp()
@@ -119,15 +196,10 @@ public class RampManager : MonoBehaviour
     void Update()
     {
         //Debug.Log(movedRamp);
-        if (Time.time - lastMoveRampTime > 1 && (player.position.z % (offsetZDistance) > -5 && player.position.z % (offsetZDistance) < 5))
+        if (!inMenu && Time.time - lastMoveRampTime > 1 && (player.position.z % (offsetZDistance) > -5 && player.position.z % (offsetZDistance) < 5))
         {
             lastMoveRampTime = Time.time;
             PlacePlane();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-           // PlacePlane();
         }
     }
 
@@ -136,6 +208,11 @@ public class RampManager : MonoBehaviour
         // the top ramp is always at index 0
         // so this returns the top ramp's position
         return transform.GetChild(0).transform.position;
+    }
+
+    public void GoToGame()
+    {
+        SceneManager.LoadScene(1);
     }
 
     void PlacePlane()
@@ -183,7 +260,7 @@ public class RampManager : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == player.gameObject)
+        if (!inMenu && other.gameObject == player.gameObject)
         {
             player.GetComponent<PlayerHealth>().WasHit(Vector3.zero, Vector3.zero);
         }

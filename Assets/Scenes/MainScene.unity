@@ -336,7 +336,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 1
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -1431,6 +1431,10 @@ MonoBehaviour:
   powerUpPrefabs:
   - {fileID: 1339899320011117187, guid: 1b430e0b69f5e594ba6d4a3d47b78d3d, type: 3}
   powerUpParent: {fileID: 0}
+  inMenu: 0
+  sfxText: {fileID: 0}
+  bgText: {fileID: 0}
+  bgMusicSource: {fileID: 0}
 --- !u!4 &1102604224
 Transform:
   m_ObjectHideFlags: 0
@@ -1606,7 +1610,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f72f5f1cbbb8d134ea13f0d836406b64, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.658
+  m_Volume: 0.34
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1615,7 +1619,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 0
   MinDistance: 133.6
-  MaxDistance: 187.43
+  MaxDistance: 388.5
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -1625,7 +1629,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.16374397
+      time: 0.26199532
       value: 1.1
       inSlope: -0.19593723
       outSlope: -0.19593723
@@ -1634,8 +1638,8 @@ AudioSource:
       inWeight: 0.33333334
       outWeight: 0.23050727
     - serializedVersion: 3
-      time: 0.27916956
-      value: 0.99974024
+      time: 0.3483758
+      value: 0.989555
       inSlope: -1.2954456
       outSlope: -1.2954456
       tangentMode: 0
@@ -1643,13 +1647,13 @@ AudioSource:
       inWeight: 0.35970205
       outWeight: 0.34742114
     - serializedVersion: 3
-      time: 1
+      time: 0.5770416
       value: 0
-      inSlope: -0.080156244
-      outSlope: -0.080156244
+      inSlope: -1.94216
+      outSlope: -1.94216
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.15415487
+      inWeight: 0.38988057
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -1851,6 +1855,7 @@ MonoBehaviour:
   maxSizePointAmount: 200
   minBoulderForce: 300
   maxBoulderForce: 700
+  inMenu: 0
 --- !u!1 &1398895548
 GameObject:
   m_ObjectHideFlags: 0
@@ -1981,15 +1986,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1578066658}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -63.2, z: -185.9}
+  m_LocalRotation: {x: -0.17364825, y: 0, z: 0, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: -78, z: -226.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 297949754}
   - {fileID: 80655195}
   m_Father: {fileID: 0}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -20, y: 0, z: 0}
 --- !u!1 &1794294164
 GameObject:
   m_ObjectHideFlags: 0

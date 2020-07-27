@@ -13,13 +13,18 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI scoreText, highScoreText;
 
     public int currentScore = 0;
+
     string highScoreKey = "HighScore";
 
     public AudioSource bgMusicSource;
 
+    bool muteBG = false;
+
     int highScore = 0;
 
     float maxFogDensity;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,8 +32,9 @@ public class ScoreManager : MonoBehaviour
         // gets high score
         highScore = PlayerPrefs.GetInt(highScoreKey, 0);
         highScoreText.text = "Best: " + highScore.ToString("00000");
+        muteBG = bool.Parse(PlayerPrefs.GetString("MuteBGMusic", "false"));
 
-
+        bgMusicSource.mute = muteBG;
     }
 
     // Update is called once per frame
