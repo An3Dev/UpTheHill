@@ -37,9 +37,10 @@ public class ScoreManager : MonoBehaviour
 
         main = Camera.main;
 
-        main.GetComponent<AudioListener>().enabled = !muteAll;
+        //main.GetComponent<AudioListener>().enabled = !muteAll;
 
         bgMusicSource.mute = muteBG;
+        //bgMusicSource.mute = muteAll;
     }
 
     // Update is called once per frame
@@ -69,7 +70,7 @@ public class ScoreManager : MonoBehaviour
     {
         currentScore += amount;
         Invoke("UpdateText", 0.04f);
-        if (!bgMusicSource.isPlaying)
+        if (!bgMusicSource.isPlaying && bgMusicSource.enabled)
         {
             bgMusicSource.Play();
         }

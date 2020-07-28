@@ -47,25 +47,37 @@ public class RampManager : MonoBehaviour
     {
         main = Camera.main;
         ResetPosition();
-
+                    muteAll = bool.Parse(PlayerPrefs.GetString(muteAllKey, "false"));
+            muteBGMusic = bool.Parse(PlayerPrefs.GetString(muteBGMusicKey, "false"));
         if (!inMenu)
         {
             player = GameObject.FindGameObjectWithTag("Player").transform;
             health = player.GetComponent<PlayerHealth>();
             playerMovement = player.GetComponent<PlayerMovement>();
             InvokeRepeating("CheckPlayerPosition", 5, 1);
+
+            AudioSource[] sources = FindObjectsOfType<AudioSource>();
+            for (int i = 0; i < sources.Length; i++)
+            {
+                sources[i].enabled = !muteAll;
+            }
         }
 
         if (inMenu)
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            muteAll = bool.Parse(PlayerPrefs.GetString(muteAllKey, "false"));
-            muteBGMusic = bool.Parse(PlayerPrefs.GetString(muteBGMusicKey, "false"));
+
 
             bgMusicSource.mute = muteBGMusic;
 
-            main.GetComponent<AudioListener>().enabled = !muteAll;
+            //main.GetComponent<AudioListener>().enabled = !muteAll;
+            AudioSource[] sources = FindObjectsOfType<AudioSource>();
+
+            for(int i = 0; i < sources.Length; i++)
+            {
+                sources[i].enabled = !muteAll;
+            }
 
             if (muteAll)
             {
@@ -100,7 +112,11 @@ public class RampManager : MonoBehaviour
             allText.text = "Mute all";
         }
 
-        main.GetComponent<AudioListener>().enabled = !muteAll;
+        AudioSource[] sources = FindObjectsOfType<AudioSource>();
+        for (int i = 0; i < sources.Length; i++)
+        {
+            sources[i].enabled = !muteAll;
+        }
 
         PlayerPrefs.SetString(muteAllKey, muteAll.ToString());
         PlayerPrefs.Save();

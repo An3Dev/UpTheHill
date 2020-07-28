@@ -107,13 +107,17 @@ public class PlayerMovement : MonoBehaviour
         if (grounded)
         {
             float volume = Random.Range(0.4f, 0.7f);
-            audioSource.PlayOneShot(stepSounds[Random.Range(0, stepSounds.Length - 1)], volume);
+            if (audioSource.enabled)
+            {
+                audioSource.PlayOneShot(stepSounds[Random.Range(0, stepSounds.Length - 1)], volume);
+            }
         }
     }
 
     public void PlayBoulderHitSound()
     {
-        audioSource.PlayOneShot(hitSound);
+        if (audioSource.enabled)
+            audioSource.PlayOneShot(hitSound);
     }
 
     void Start()
@@ -149,7 +153,8 @@ public class PlayerMovement : MonoBehaviour
                 powerUpTimer = 0;
                 maxSpeed = maximumMaxSpeed;
                 usingSpeedBoost = false;
-                audioSource.PlayOneShot(regularSpeedSound);
+                if (audioSource.enabled)
+                    audioSource.PlayOneShot(regularSpeedSound);
             }
         }
 
@@ -197,7 +202,8 @@ public class PlayerMovement : MonoBehaviour
         {
             maxSpeed = speedBoostSpeed;
             usingSpeedBoost = true;
-            audioSource.PlayOneShot(speedSound);
+            if (audioSource.enabled)
+                audioSource.PlayOneShot(speedSound);
             powerUpTimer = 0;
         } else if (type == PowerUp.PowerUpType.Time)
         {

@@ -376,7 +376,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 1000
+  far clip plane: 141.28
   field of view: 80
   orthographic: 0
   orthographic size: 5
@@ -1432,7 +1432,7 @@ MonoBehaviour:
   - {fileID: 1339899320011117187, guid: 1b430e0b69f5e594ba6d4a3d47b78d3d, type: 3}
   powerUpParent: {fileID: 0}
   inMenu: 0
-  sfxText: {fileID: 0}
+  allText: {fileID: 0}
   bgText: {fileID: 0}
   bgMusicSource: {fileID: 0}
 --- !u!4 &1102604224
@@ -1610,7 +1610,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f72f5f1cbbb8d134ea13f0d836406b64, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.525
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1629,7 +1629,7 @@ AudioSource:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.25507545
+      time: 0.34703255
       value: 1.1
       inSlope: -0.19593723
       outSlope: -0.19593723
@@ -1638,8 +1638,8 @@ AudioSource:
       inWeight: 0.33333334
       outWeight: 0.23050727
     - serializedVersion: 3
-      time: 0.27572107
-      value: 0.99974024
+      time: 0.3734231
+      value: 0.9912144
       inSlope: -1.2954456
       outSlope: -1.2954456
       tangentMode: 0
@@ -1647,7 +1647,7 @@ AudioSource:
       inWeight: 0.35970205
       outWeight: 0.34742114
     - serializedVersion: 3
-      time: 0.386734
+      time: 0.47293854
       value: 0
       inSlope: -1.94216
       outSlope: -1.94216
